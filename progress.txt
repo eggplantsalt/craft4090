@@ -1,0 +1,83 @@
+CRaFT scaffold progress (OpenVLA base)
+
+[A] Repo reconnaissance summary
+- Repo root: /workspace/openvla
+- Python package root (setuptools package): prismatic/
+- Baseline script dirs:
+  - scripts/ (generic VLM pretraining)
+  - vla-scripts/ (OpenVLA / VLA training & deployment)
+
+[A.2] Confirmed training entrypoints and step implementation (read from code)
+1) VLM pretrain entry
+   - File: scripts/pretrain.py
+   - Config class: PretrainConfig
+   - Main fn: pretrain(cfg)
+   - Calls train_strategy.run_training(...)
+
+2) OpenVLA/VLA train entry
+   - File: vla-scripts/train.py
+   - Config class: TrainConfig
+   - Main fn: train(cfg)
+   - Calls train_strategy.run_vla_training(...)
+
+3) HF/PEFT finetune entry (separate path)
+   - File: vla-scripts/finetune.py
+   - Config class: FinetuneConfig
+   - Main fn: finetune(cfg)
+
+4) Training strategy implementation
+   - File: prismatic/training/strategies/base_strategy.py
+   - Class: TrainingStrategy
+   - Functions:
+     - run_training(...): language/VLM loop
+     - run_vla_training(...): VLA loop
+   - Confirmed step internals in both loops:
+     - forward -> output.loss
+     - loss.backward() or normalized_loss.backward()
+     - self.clip_grad_norm()
+     - self.optimizer.step()
+     - self.lr_scheduler.step()
+     - self.optimizer.zero_grad()
+
+[A.2] Dataset + collator + batch field contract
+1) VLA dataset materialization
+   - File: prismatic/vla/materialize.py
+   - Function: get_vla_dataset_and_collator(...)
+   - Returns: (dataset, action_tokenizer, collator)
+
+2) RLDS transform output fields (single sample)
+   - File: prismatic/vla/datasets/datasets.py
+   - Class: RLDSBatchTransform.__call__
+   - Returns keys: pixel_values, input_ids, labels, dataset_name
+
+3) VLA collator output fields (batch)
+   - File: prismatic/util/data_utils.py
+   - Class: PaddedCollatorForActionPrediction.__call__
+   - Returns keys: pixel_values, input_ids, attention_mask, labels, dataset_names(optional)
+
+[B/C/D/E] This prompt implemented
+- Added CRaFT scaffold package under prismatic/craft/
+- Added dry-run entrypoint: vla-scripts/train_craft.py
+- Added tests manifest: tests.json
+- Added minimal pytest skeleton: tests/test_grad_surgery_math.py
+
+Next plan (Prompt 1/2/3/4/5)
+Prompt 1:
+- Implement retention branch feature extraction points (hidden states / token representations)
+- Define anchor-cache schema and offline cache writer script
+
+Prompt 2:
+- Integrate dual-loss training loop in train_craft.py
+- Add two backward passes and gradient collection utilities
+
+Prompt 3:
+- Wire conflict-aware projection + merged gradients into optimizer step
+- Add primal-dual lambda update and epsilon scheduler into training state
+
+Prompt 4:
+- Add CRaFT checkpoints (lambda, epsilon, state) and resume compatibility
+- Add logging for L_act, L_ret, dot(g_act,g_ret), lambda
+
+Prompt 5:
+- Add math unit tests for grad surgery + lambda update
+- Add train_craft dry-run CI/command docs and LIBERO-focused launch scripts

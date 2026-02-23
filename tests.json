@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "grad_surgery_math",
+      "status": "not_started",
+      "path": "tests/test_grad_surgery_math.py",
+      "notes": "TODO: verify dot product and conflict projection numerics against closed-form references"
+    },
+    {
+      "name": "train_craft_dryrun",
+      "status": "not_started",
+      "path": "vla-scripts/train_craft.py",
+      "notes": "TODO: run one-batch forward dry-run with OpenVLA + RLDS dataset"
+    }
+  ]
+}
