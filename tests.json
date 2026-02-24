@@ -8,9 +8,9 @@
     },
     {
       "name": "train_craft_dryrun",
-      "status": "not_started",
+      "status": "in_progress",
       "path": "vla-scripts/train_craft.py",
-      "notes": "TODO: run one-batch forward dry-run with OpenVLA + RLDS dataset"
+      "notes": "3-step dry-run command prepared; runtime validation blocked until dataset/cache paths are available in target environment"
     }
   ]
 }
