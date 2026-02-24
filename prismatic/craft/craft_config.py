@@ -32,7 +32,9 @@ class CraftConfig:
     lambda_max: Optional[float] = None
 
     hidden_layer: int = -2
-    pooling: str = "mean"
+    pooling: str = "mean_image_tokens"
+    retention_loss_type: str = "mse"
+    retention_mask_key: Optional[str] = None
     delta: float = 1e-12
 
     anchor_cache_dir: Path = Path("cache/craft/anchors")

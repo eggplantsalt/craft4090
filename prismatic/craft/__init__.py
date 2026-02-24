@@ -8,7 +8,7 @@ from .anchor_cache import AnchorCacheDataset, build_anchor_dataloader, craft_anc
 from .craft_config import CraftConfig
 from .grad_surgery import compute_dot, merge_grads, project_if_conflict
 from .primal_dual import epsilon_schedule, update_lambda
-from .retention_loss import compute_retention_loss
+from .retention_loss import compute_hidden_retention_loss, compute_retention_loss
 
 __all__ = [
     "AnchorCacheDataset",
@@ -20,5 +20,6 @@ __all__ = [
     "merge_grads",
     "project_if_conflict",
     "update_lambda",
+    "compute_hidden_retention_loss",
     "compute_retention_loss",
 ]
